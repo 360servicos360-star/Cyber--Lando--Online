@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3D91">
+<title>Cyber Lando - Documentos</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--cor:#0B3D91;--tinta:#16233A;--suave:#5C6877;--linha:#D5DAE1;--fundo:#EEF1F5;--papel:#fff;--aviso:#F2C94C;--ok:#1F6B4A;--erro:#A8201A}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--fundo);color:var(--tinta);font:400 16px/1.5 "Public Sans",system-ui,sans-serif}
+  h1,h2,h3{font-family:"Newsreader",Georgia,serif;margin:0;line-height:1.15}
+  .topo{background:var(--cor);color:#fff;padding:22px 16px 18px}
+  .topo-in{max-width:760px;margin:0 auto}
+  .topo h1{font-size:clamp(30px,8vw,42px);letter-spacing:-.01em}
+  .topo p{margin:4px 0 0;opacity:.85;font-size:14px}
+  .topo .barra{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .topo button{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:4px;padding:8px 12px;font:500 14px "Public Sans",sans-serif;cursor:pointer}
+  .topo button:hover{background:rgba(255,255,255,.14)}
+  main{max-width:760px;margin:0 auto;padding:16px 16px 80px}
+  .vista{display:none}.vista.on{display:block}
+
+  input[type=text],input[type=date],input[type=password],input[type=search],select,textarea{width:100%;font:inherit;color:inherit;padding:11px 12px;border:1px solid var(--linha);border-radius:4px;background:#fff}
+  textarea{min-height:84px;resize:vertical}
+  input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--aviso);outline-offset:1px}
+  label{display:block;font-weight:500;font-size:14px;margin:14px 0 4px}
+  .hint{font-size:13px;color:var(--ok);min-height:18px;margin:3px 0 0}
+  .duas{display:grid;gap:0 12px}
+  @media(min-width:560px){.duas{grid-template-columns:1fr 1fr}}
+
+  /* Lista de documentos */
+  .grupo{margin-top:22px}
+  .grupo h2{font-size:21px;margin-bottom:6px}
+  .item{display:flex;justify-content:space-between;gap:12px;align-items:center;width:100%;text-align:left;background:var(--papel);border:0;border-bottom:1px solid var(--linha);padding:14px 12px;font:500 16px "Public Sans",sans-serif;color:var(--tinta);cursor:pointer}
+  .item:first-of-type{border-top:1px solid var(--linha)}
+  .item:hover{background:#F7F9FC}
+  .item .p{font:700 15px "Newsreader",Georgia,serif;color:var(--cor);white-space:nowrap}
+  .item .ext{color:var(--suave);font-size:13px;font-weight:400}
+
+  /* Formulário e pré-visualização */
+  .caixa{background:var(--papel);border:1px solid var(--linha);border-radius:6px;padding:18px}
+  .caixa h2{font-size:26px;margin-bottom:4px}
+  .nota{margin:10px 0 0;font-size:14px;border-left:4px solid var(--aviso);padding:4px 0 4px 12px;color:var(--tinta)}
+  .sep{border:0;border-top:1px solid var(--linha);margin:22px 0 4px}
+  .botao{display:block;width:100%;border:0;border-radius:4px;background:var(--cor);color:#fff;font:600 16px/1 "Public Sans",sans-serif;padding:15px;cursor:pointer;text-align:center;margin-top:12px}
+  .botao:hover{filter:brightness(.92)}
+  .botao.sec{background:transparent;color:var(--tinta);border:2px solid var(--tinta)}
+  .botao.sec:hover{background:var(--tinta);color:#fff}
+  .botao.zap{background:#1E8E4E}
+  .acoes{display:grid;gap:0 10px}
+  @media(min-width:560px){.acoes{grid-template-columns:1fr 1fr}}
+  .folha{background:#fff;border:1px solid var(--linha);padding:26px 20px;font:400 15.5px/1.65 "Newsreader",Georgia,serif;margin-top:12px}
+  .folha p{margin:0 0 8px}
+  .folha .titulo{text-align:center;font-weight:700;font-size:18px;margin:0 0 16px;text-transform:uppercase}
+  .folha .sub{font-weight:700;margin-top:14px}
+  .folha mark{background:#FFF1B8;padding:0 2px}
+  .folha .assin{display:grid;grid-template-columns:1fr 1fr;gap:34px 18px;margin-top:38px;text-align:center}
+  .folha .assin div{border-top:1px solid #000;padding-top:4px;font-size:14px}
+  .folha .assin.um{grid-template-columns:1fr;max-width:300px;margin-left:auto;margin-right:auto}
+  .estado{margin-top:10px;font-size:14px;color:var(--ok);min-height:20px}
+  .aviso{margin-top:18px;font-size:13px;color:var(--suave)}
+
+  /* Registo */
+  .tot{display:flex;gap:12px;margin:10px 0}
+  .tot div{flex:1;background:var(--cor);color:#fff;border-radius:6px;padding:14px}
+  .tot b{display:block;font:700 28px "Newsreader",Georgia,serif;color:var(--aviso)}
+  .linha{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--linha);font-size:15px}
+  .linha small{color:var(--suave);display:block}
+
+  /* Bloqueio */
+  #lock{position:fixed;inset:0;background:var(--cor);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+  #lock .caixa{width:100%;max-width:360px}
+  #lock h1{font-size:34px;margin-bottom:6px}
+  #lockErro{color:var(--erro);font-size:14px;min-height:20px;margin-top:8px}
+
+  @media print{
+    body{background:#fff}.topo,#vLista,#vForm,#vReg,.acoes,.estado,.aviso,.botao,#lock,h2,.nota{display:none!important}
+    main{padding:0}.caixa{border:0;padding:0}.folha{border:0;padding:0;margin:0}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="caixa">
+    <h1 id="lockNome">Cyber Lando</h1>
+    <p style="margin:0 0 4px;color:var(--suave)">Digite o PIN para entrar.</p>
+    <label for="pin">PIN</label>
+    <input type="password" id="pin" autocomplete="off">
+    <div id="lockErro" role="alert"></div>
+    <button class="botao" id="btnEntrar" type="button">Entrar</button>
+  </div>
+</div>
+
+<header class="topo">
+  <div class="topo-in">
+    <h1 id="nomeLoja">Cyber Lando</h1>
+    <p>Balcão de documentos. Preencha, confira e baixe o PDF.</p>
+    <div class="barra">
+      <button type="button" id="bLista">Documentos</button>
+      <button type="button" id="bReg">Registo de vendas</button>
+      <button type="button" id="bPin">Mudar PIN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- LISTA -->
+  <section class="vista on" id="vLista">
+    <label for="busca" style="margin-top:0">Procurar documento</label>
+    <input type="search" id="busca" placeholder="Ex.: contrato, recibo, visto">
+    <div id="lista"></div>
+  </section>
+
+  <!-- FORMULÁRIO -->
+  <section class="vista" id="vForm">
+    <div class="caixa">
+      <h2 id="fTitulo"></h2>
+      <p class="nota" id="fNota" style="display:none"></p>
+      <div id="campos"></div>
+      <hr class="sep">
+      <h3 style="font-size:20px;margin-top:14px">Cobrança</h3>
+      <div class="duas">
+        <div><label for="preco">Preço combinado (Kz)</label><input type="text" id="preco" inputmode="numeric"></div>
+        <div><label for="cli">Cliente (para o registo)</label><input type="text" id="cli"></div>
+      </div>
+      <label for="cliZap">WhatsApp do cliente (opcional)</label>
+      <input type="text" id="cliZap" inputmode="tel" placeholder="9XXXXXXXX">
+      <label for="ref">N.º do comprovativo do Multicaixa Express</label>
+      <input type="text" id="ref" placeholder="Preencha quando o cliente pagar">
+      <button class="botao" id="btnVer" type="button">Ver o documento</button>
+      <button class="botao sec" id="btnVoltarLista" type="button">Voltar à lista</button>
+    </div>
+  </section>
+
+  <!-- PRÉ-VISUALIZAÇÃO -->
+  <section class="vista" id="vPrev">
+    <div class="caixa">
+      <h2>Confira antes de baixar</h2>
+      <p class="aviso" style="margin-top:4px">O que estiver a amarelo ainda não foi preenchido. Peça ao cliente para conferir os nomes e os números.</p>
+      <div class="folha" id="folha"></div>
+      <div class="acoes">
+        <button class="botao" id="btnPDF" type="button">Baixar PDF</button>
+        <button class="botao zap" id="btnCobrar" type="button">Enviar cobrança no WhatsApp</button>
+        <button class="botao sec" id="btnCopiar" type="button">Copiar texto</button>
+        <button class="botao sec" id="btnEditar" type="button">Voltar a editar</button>
+        <button class="botao sec" id="btnRecibo" type="button" style="grid-column:1/-1">Baixar recibo do cliente</button>
+      </div>
+      <div class="estado" id="estado"></div>
+      <p class="aviso">Escreva e assine só informação verdadeira. Documentos com dados falsos podem causar problemas ao cliente e a si.</p>
+    </div>
+  </section>
+
+  <!-- REGISTO -->
+  <section class="vista" id="vReg">
+    <div class="caixa">
+      <h2>Registo de vendas</h2>
+      <div class="tot"><div><b id="totHoje">0</b>Kz hoje</div><div><b id="totGeral">0</b>Kz no total</div></div>
+      <div id="regLista"></div>
+      <button class="botao sec" id="btnLimpar" type="button">Limpar registo</button>
+      <p class="aviso">Este registo fica guardado só neste telemóvel e navegador.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ====== CONFIGURAÇÃO: mude aqui ====== */
+const CFG = {
+  nome: "Cyber Lando",
+  express: "943804370",       // Multicaixa Express
+  zap: "957760561",
+  linkRecurso: "https://360servicos360-star.github.io/Carta-_de-recurso-de-visto-negado/",
+  pinPadraoHash: "2ff111d4b99e33fe1e01b2e8d7ed203128fed03fe3cc6d71ee302f24993ccabf" // PIN inicial: lando123 (mude no botão "Mudar PIN")
+};
+/* ===================================== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const kzf = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const dataLonga = d => new Date(d + "T00:00:00").toLocaleDateString("pt-PT",{day:"numeric",month:"long",year:"numeric"});
+const isoHoje = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const soDigitos = s => parseInt(String(s).replace(/\D/g,"") || "0", 10);
+
+/* Número por extenso */
+const U=["","um","dois","três","quatro","cinco","seis","sete","oito","nove","dez","onze","doze","treze","catorze","quinze","dezasseis","dezassete","dezoito","dezanove"];
+const Dz=["","","vinte","trinta","quarenta","cinquenta","sessenta","setenta","oitenta","noventa"];
+const Ct=["","cento","duzentos","trezentos","quatrocentos","quinhentos","seiscentos","setecentos","oitocentos","novecentos"];
+function ate999(n){ if(n===100) return "cem"; const c=Math.floor(n/100), r=n%100, p=[]; if(c) p.push(Ct[c]); if(r){ if(r<20) p.push(U[r]); else { const d=Math.floor(r/10), u=r%10; p.push(Dz[d]+(u?" e "+U[u]:"")); } } return p.join(" e "); }
+function extenso(n){
+  if(n===0) return "zero";
+  const mi=Math.floor(n/1e6), mil=Math.floor((n%1e6)/1000), re=n%1000, ps=[];
+  if(mi) ps.push({v:mi,t:mi===1?"um milhão":ate999(mi)+" milhões"});
+  if(mil) ps.push({v:mil,t:mil===1?"mil":ate999(mil)+" mil"});
+  if(re) ps.push({v:re,t:ate999(re)});
+  return ps.map((p,i)=> i===0 ? p.t : ((i===ps.length-1 && (p.v<100||p.v%100===0)) ? " e " : " ") + p.t).join("");
+}
+const moeda = n => `${kzf(n)} Kz (${extenso(n)} Kwanzas)`;
+
+/* ===== Modelos de documentos =====
+   c = campos; x = texto ({campo} é substituído; "# " título; "## " subtítulo);
+   s = assinaturas [[papel, campoDoNome]]; test = linha de testemunhas; p = preço padrão */
+const T=(k,l,d)=>[k,l,"text",d||""], A=(k,l)=>[k,l,"area"], D=(k,l)=>[k,l,"date"], K=(k,l)=>[k,l,"kz"], N=(k,l)=>[k,l,"num"];
+const pes=(p,l)=>[[p+"N",l+": nome completo"],[p+"B","N.º do BI de "+l.toLowerCase()],[p+"M","Morada de "+l.toLowerCase()]];
+const pt=p=>`{${p}N}, portador(a) do BI n.º {${p}B}, residente em {${p}M}`;
+const NOME=["nome","Nome completo"], BI=["bi","N.º do BI ou passaporte"], MOR=["morada","Morada"];
+
+const DOCS = [
+{id:"apresentacao",cat:"Visto e viagem",t:"Carta de apresentação para visto",p:3000,
+ c:[NOME,BI,T("nac","Nacionalidade","angolana"),T("destino","País de destino"),T("motivo","Motivo da viagem"),T("duracao","Duração prevista da estadia"),A("situacao","A sua situação (trabalho, família, meios para a viagem)"),T("entidade","Dirigida a","o Consulado ou a Embaixada")],
+ x:["# Carta de apresentação","Ex.mo(a) Senhor(a)\n{entidade}","Eu, {nome}, de nacionalidade {nac}, portador(a) do documento n.º {bi}, venho apresentar o meu pedido de visto para {destino}, pelo seguinte motivo: {motivo}. A estadia prevista é de {duracao}.","## Situação pessoal e profissional","{situacao}","Comprometo-me a cumprir as regras de entrada e permanência e a regressar ao meu país no fim da estadia. Anexo os documentos necessários ao pedido e fico à disposição para qualquer esclarecimento.","Com os melhores cumprimentos,"],
+ s:[["O(A) requerente","nome"]]},
+{id:"motivacao",cat:"Visto e viagem",t:"Carta de motivação (estudos ou formação)",p:3000,
+ c:[NOME,T("inst","Instituição ou programa a que se candidata"),T("curso","Curso ou formação"),A("motivos","Porque quer esta oportunidade"),A("plano","O que pretende fazer depois")],
+ x:["# Carta de motivação","À {inst}","Eu, {nome}, candidato(a) a {curso}, escrevo esta carta para explicar as razões da minha candidatura.","## Motivação","{motivos}","## Objectivos","{plano}","Agradeço a atenção dispensada e coloco-me à disposição para uma entrevista ou para o envio de mais informação.","Com os melhores cumprimentos,"],
+ s:[["O(A) candidato(a)","nome"]]},
+{id:"convite",cat:"Visto e viagem",t:"Carta-convite",p:3000,
+ c:[...pes("c","Quem convida"),T("vN","Convidado: nome completo"),T("vP","N.º do passaporte do convidado"),T("vNac","Nacionalidade do convidado"),T("rel","Relação com o convidado (amigo, irmão...)"),T("local","Cidade e país da estadia"),D("ini","Data prevista de chegada"),T("dur","Duração da estadia")],
+ x:["# Carta-convite",`Eu, ${pt("c")}, convido {vN}, de nacionalidade {vNac}, portador(a) do passaporte n.º {vP}, meu(minha) {rel}, a visitar-me em {local}, a partir de {ini}, por um período de {dur}.`,"Durante a estadia, o(a) convidado(a) ficará alojado(a) na minha residência acima indicada. O(A) convidado(a) compromete-se a regressar ao país de origem no fim do prazo."],
+ s:[["Quem convida","cN"]]},
+{id:"termo-resp",cat:"Visto e viagem",t:"Termo de responsabilidade",p:3000,
+ c:[...pes("r","Responsável"),T("vN","Visitante: nome completo"),T("vP","N.º do passaporte do visitante"),T("dur","Duração da estadia"),A("despesas","O que assume (alojamento, alimentação, saúde, regresso...)")],
+ x:["# Termo de responsabilidade",`Eu, ${pt("r")}, assumo, pelo presente termo, a responsabilidade pela estadia de {vN}, portador(a) do passaporte n.º {vP}, durante {dur}, obrigando-me ao seguinte:`,"{despesas}","Declaro que as informações prestadas são verdadeiras."],
+ s:[["O(A) responsável","rN"]]},
+{id:"hospedagem",cat:"Visto e viagem",t:"Declaração de hospedagem",p:2000,
+ c:[...pes("h","Quem hospeda"),T("gN","Hóspede: nome completo"),T("gB","N.º do BI ou passaporte do hóspede"),D("desde","Hospedado desde")],
+ x:["# Declaração de hospedagem",`Eu, ${pt("h")}, declaro que {gN}, portador(a) do documento n.º {gB}, está hospedado(a) na minha casa, situada em {hM}, desde {desde}.`,"A presente declaração é feita sob compromisso de honra, para os fins que o(a) interessado(a) entender convenientes."],
+ s:[["Quem hospeda","hN"]]},
+{id:"aut-menor",cat:"Visto e viagem",t:"Autorização de viagem de menor",p:3000,
+ c:[...pes("p","Pai, mãe ou responsável"),T("mN","Menor: nome completo"),D("mNasc","Data de nascimento do menor"),T("aN","Acompanhante: nome completo"),T("aB","N.º do BI ou passaporte do acompanhante"),T("dest","Destino"),D("ida","Data de saída"),D("volta","Data de regresso")],
+ x:["# Autorização de viagem de menor",`Eu, ${pt("p")}, na qualidade de responsável legal, autorizo o(a) menor {mN}, nascido(a) em {mNasc}, a viajar para {dest}, de {ida} até {volta}, acompanhado(a) por {aN}, portador(a) do documento n.º {aB}.`,"Esta autorização é dada de livre vontade, para os fins que se mostrem necessários."],
+ s:[["O(A) responsável","pN"]],
+ nota:"Reconheça a assinatura no notário e anexe cópia do BI do responsável."},
+{id:"honra",cat:"Visto e viagem",t:"Declaração de honra",p:2000,
+ c:[NOME,BI,MOR,A("texto","O que declara (um ponto por linha)")],
+ x:["# Declaração de honra","Eu, {nome}, portador(a) do documento n.º {bi}, residente em {morada}, declaro, sob compromisso de honra, que:","{texto}","Declaro ainda que as informações acima são verdadeiras e estou ciente das consequências legais de declarações falsas."],
+ s:[["O(A) declarante","nome"]]},
+
+{id:"cv",cat:"Trabalho e serviços",t:"Currículo",p:2500,
+ c:[NOME,D("nasc","Data de nascimento"),T("nac","Nacionalidade","angolana"),MOR,T("tel","Telefone"),T("email","Email"),T("obj","Objectivo profissional"),A("exp","Experiência profissional (uma por linha)"),A("form","Formação (uma por linha)"),A("comp","Competências e idiomas")],
+ x:["# {nome}","Data de nascimento: {nasc}\nNacionalidade: {nac}\nMorada: {morada}\nTelefone: {tel}\nEmail: {email}","## Objectivo profissional","{obj}","## Experiência profissional","{exp}","## Formação","{form}","## Competências e idiomas","{comp}"],
+ s:[], semFecho:true},
+{id:"decl-servico",cat:"Trabalho e serviços",t:"Declaração de serviço (para a empresa assinar)",p:2000,
+ c:[T("emp","Nome da empresa"),T("nif","NIF da empresa"),T("rep","Representante da empresa"),T("cargo","Cargo do representante"),T("tN","Trabalhador: nome completo"),T("tB","N.º do BI do trabalhador"),T("func","Função"),D("adm","Data de admissão")],
+ x:["# Declaração de serviço","{emp}, com o NIF {nif}, declara que {tN}, portador(a) do BI n.º {tB}, trabalha nesta empresa desde {adm}, exercendo a função de {func}.","A presente declaração é emitida a pedido do(a) interessado(a), para os fins que entender convenientes."],
+ s:[["A empresa: {rep}, {cargo}","" ]],
+ nota:"Deve ser assinada e carimbada pela empresa. Só emita se a pessoa trabalha mesmo lá."},
+{id:"contrato-trabalho",cat:"Trabalho e serviços",t:"Contrato de trabalho",p:3000,
+ c:[T("eN","Empregador: nome ou empresa"),T("eB","NIF ou BI do empregador"),T("eM","Morada do empregador"),...pes("t","Trabalhador"),T("func","Função"),D("ini","Início do contrato"),T("prazo","Duração (ex.: 1 ano, tempo indeterminado)"),K("sal","Salário mensal"),T("hor","Horário de trabalho","das 8h às 17h, de segunda a sexta"),T("dia","Dia de pagamento do salário","último dia útil de cada mês")],
+ x:["# Contrato de trabalho","Entre {eN}, com o NIF/BI n.º {eB}, com sede/residência em {eM}, adiante designado(a) por Empregador; e "+pt("t")+", adiante designado(a) por Trabalhador, é celebrado o presente contrato de trabalho, nos termos da Lei Geral do Trabalho em vigor, que se rege pelas cláusulas seguintes:","## Cláusula 1.ª - Função","O Trabalhador é contratado para exercer a função de {func}.","## Cláusula 2.ª - Início e duração","O contrato inicia-se em {ini} e tem a duração de {prazo}.","## Cláusula 3.ª - Salário","O Trabalhador recebe um salário mensal de {sal}, pago até ao(à) {dia}.","## Cláusula 4.ª - Horário","O horário de trabalho é {hor}.","## Cláusula 5.ª - Direitos e deveres","As partes gozam dos direitos e estão sujeitas aos deveres previstos na Lei Geral do Trabalho, incluindo férias, descanso semanal e segurança social.","## Cláusula 6.ª - Cessação","O contrato cessa nos termos da lei, devendo a parte que o quiser terminar avisar a outra por escrito, com a antecedência legal.","## Cláusula 7.ª - Foro","Para resolver qualquer litígio, as partes elegem o tribunal competente da comarca de {cidade}."],
+ s:[["O Empregador","eN"],["O Trabalhador","tN"]]},
+{id:"contrato-servicos",cat:"Trabalho e serviços",t:"Contrato de prestação de serviços",p:3000,
+ c:[...pes("p","Prestador do serviço"),...pes("c","Cliente"),A("serv","Serviço a prestar"),K("valor","Valor total"),T("prazo","Prazo de execução"),T("pag","Forma de pagamento","metade no início e metade na entrega")],
+ x:["# Contrato de prestação de serviços",`Entre ${pt("p")}, adiante designado(a) por Prestador; e ${pt("c")}, adiante designado(a) por Cliente, é celebrado o presente contrato, que se rege pelas cláusulas seguintes:`,"## Cláusula 1.ª - Serviço","O Prestador obriga-se a realizar o seguinte serviço: {serv}.","## Cláusula 2.ª - Preço e pagamento","O Cliente paga ao Prestador o valor total de {valor}, com a seguinte forma de pagamento: {pag}.","## Cláusula 3.ª - Prazo","O serviço será concluído em {prazo}.","## Cláusula 4.ª - Incumprimento","Se uma das partes não cumprir o acordado, a outra pode resolver o contrato, sem prejuízo de indemnização.","## Cláusula 5.ª - Foro","Para resolver qualquer litígio, as partes elegem o tribunal competente da comarca de {cidade}."],
+ s:[["O Prestador","pN"],["O Cliente","cN"]]},
+{id:"estagio",cat:"Trabalho e serviços",t:"Contrato de estágio",p:3000,
+ c:[T("eN","Entidade de estágio"),T("eNif","NIF da entidade"),...pes("g","Estagiário"),T("area","Área de estágio"),D("ini","Início"),T("dur","Duração"),K("bolsa","Bolsa mensal"),T("hor","Horário","das 8h às 13h, de segunda a sexta")],
+ x:["# Contrato de estágio","Entre {eN}, com o NIF {eNif}, adiante designada por Entidade; e "+pt("g")+", adiante designado(a) por Estagiário, é celebrado o presente contrato de estágio, com as cláusulas seguintes:","## Cláusula 1.ª - Objecto","O Estagiário realiza estágio na área de {area}, para aprendizagem prática.","## Cláusula 2.ª - Duração e horário","O estágio começa em {ini} e dura {dur}, com o horário {hor}.","## Cláusula 3.ª - Bolsa","A Entidade paga ao Estagiário uma bolsa mensal de {bolsa}.","## Cláusula 4.ª - Deveres","O Estagiário compromete-se a ser assíduo, cumprir as regras da Entidade e guardar sigilo. A Entidade compromete-se a orientar o Estagiário e a emitir certificado no fim, se o estágio for concluído."],
+ s:[["A Entidade","eN"],["O Estagiário","gN"]]},
+{id:"demissao",cat:"Trabalho e serviços",t:"Carta de demissão",p:2000,
+ c:[NOME,BI,T("emp","Nome da empresa"),T("func","Função"),D("saida","Último dia de trabalho")],
+ x:["# Carta de demissão","Ex.mos Senhores\n{emp}","Eu, {nome}, portador(a) do BI n.º {bi}, que exerço a função de {func}, venho comunicar a minha decisão de cessar o contrato de trabalho, com efeitos a partir de {saida}.","Agradeço a oportunidade e comprometo-me a colaborar na passagem de funções até à data indicada."],
+ s:[["O(A) trabalhador(a)","nome"]],
+ nota:"Confirme o aviso prévio exigido pelo seu contrato e pela lei."},
+
+{id:"arrendamento",cat:"Casa e terreno",t:"Contrato de arrendamento (simples)",p:3000,
+ c:[...pes("s","Senhorio"),...pes("i","Inquilino"),T("tipo","Tipo de imóvel","apartamento T3"),T("end","Endereço do imóvel"),K("renda","Renda mensal"),T("dia","Pagar até ao dia","5"),D("ini","Início do contrato"),T("dur","Duração","2 anos"),T("caucao","Caução","1 mês de renda")],
+ x:["# Contrato de arrendamento",`Entre ${pt("s")}, adiante designado(a) por Senhorio; e ${pt("i")}, adiante designado(a) por Inquilino, é celebrado o presente contrato, nos termos da Lei n.º 26/15, de 23 de Outubro (Lei do Arrendamento Urbano) e do Código Civil, com as cláusulas seguintes:`,"## Cláusula 1.ª - Objecto","O Senhorio dá de arrendamento ao Inquilino o imóvel do tipo {tipo}, situado em {end}.","## Cláusula 2.ª - Prazo","O arrendamento começa em {ini} e dura {dur}, renovando-se por períodos iguais, salvo aviso escrito de qualquer das partes.","## Cláusula 3.ª - Renda","A renda mensal é de {renda}, paga até ao dia {dia} de cada mês, mediante recibo.","## Cláusula 4.ª - Caução","O Inquilino entrega, a título de caução, o equivalente a {caucao}, a devolver no fim do contrato, descontados danos ou rendas em dívida.","## Cláusula 5.ª - Conservação","O Inquilino conserva o imóvel em bom estado e não pode fazer obras sem autorização escrita do Senhorio.","## Cláusula 6.ª - Subarrendamento","É proibido subarrendar ou ceder o imóvel sem autorização escrita do Senhorio.","## Cláusula 7.ª - Devolução","No fim do contrato, o Inquilino devolve o imóvel e as chaves no estado em que o recebeu, salvo o desgaste normal.","## Cláusula 8.ª - Foro","Para resolver qualquer litígio, as partes elegem o tribunal competente da comarca de {cidade}."],
+ s:[["O Senhorio","sN"],["O Inquilino","iN"]], test:true,
+ nota:"Confirme na lei os limites de caução e de renda adiantada. Para um contrato mais completo use o gerador de arrendamento."},
+{id:"recibo-renda",cat:"Casa e terreno",t:"Recibo de renda",p:1500,
+ c:[T("rN","Senhorio: nome completo"),T("iN","Inquilino: nome completo"),K("valor","Valor recebido"),T("mes","Renda referente ao mês de"),T("imovel","Imóvel (endereço)")],
+ x:["# Recibo de renda","Recebi de {iN} a quantia de {valor}, referente à renda do mês de {mes}, do imóvel situado em {imovel}.","Passo o presente recibo como prova do pagamento."],
+ s:[["O Senhorio","rN"]]},
+{id:"venda-terreno",cat:"Casa e terreno",t:"Declaração de venda de terreno",p:3000,
+ c:[...pes("v","Vendedor"),...pes("c","Comprador"),A("loc","Localização do terreno (bairro, município, referências)"),T("area","Área (m²)"),K("preco","Preço"),T("pag","Forma de pagamento"),T("docs","Documentos do terreno que o vendedor tem")],
+ x:["# Declaração de venda de terreno",`Eu, ${pt("v")}, declaro que vendo a ${pt("c")}, o terreno situado em: {loc}, com a área de {area}.`,"O preço da venda é de {preco}, pago da seguinte forma: {pag}.","O vendedor declara ser o legítimo possuidor do terreno e que este está livre de dívidas e de litígios. Documentos do terreno: {docs}.","O comprador declara que viu o terreno e aceita as condições acima."],
+ s:[["O Vendedor","vN"],["O Comprador","cN"]], test:true,
+ nota:"Este acordo não substitui a escritura pública nem o registo. Faça-os no notário e na conservatória."},
+{id:"aut-construcao",cat:"Casa e terreno",t:"Autorização de construção",p:2000,
+ c:[...pes("d","Dono do terreno"),...pes("c","Quem vai construir"),A("loc","Localização do terreno"),T("obra","Tipo de obra"),T("prazo","Validade da autorização")],
+ x:["# Autorização de construção",`Eu, ${pt("d")}, dono do terreno situado em {loc}, autorizo ${pt("c")} a construir {obra} no referido terreno.`,"A autorização é válida por {prazo}. A obra deve respeitar as regras de construção em vigor e as licenças exigidas pelas autoridades."],
+ s:[["O dono do terreno","dN"],["Quem vai construir","cN"]]},
+{id:"entrega",cat:"Casa e terreno",t:"Termo de entrega (chaves ou bens)",p:1500,
+ c:[T("eN","Quem entrega: nome completo"),T("rN","Quem recebe: nome completo"),T("rB","N.º do BI de quem recebe"),A("obj","O que é entregue"),T("estado","Estado","bom estado"),D("quando","Data da entrega")],
+ x:["# Termo de entrega","{eN} entrega, nesta data ({quando}), a {rN}, portador(a) do BI n.º {rB}, o seguinte:","{obj}","Estado de conservação: {estado}.","O recebedor confirma que recebeu tudo o que está descrito acima."],
+ s:[["Quem entrega","eN"],["Quem recebe","rN"]]},
+{id:"compra-venda",cat:"Casa e terreno",t:"Contrato de compra e venda",p:3000,
+ c:[...pes("v","Vendedor"),...pes("c","Comprador"),A("obj","O que é vendido (descrição, marca, estado, n.º de série)"),K("preco","Preço"),T("pag","Forma de pagamento","pagamento total na assinatura"),D("ent","Data de entrega")],
+ x:["# Contrato de compra e venda",`Entre ${pt("v")}, adiante designado(a) por Vendedor; e ${pt("c")}, adiante designado(a) por Comprador, é celebrado o presente contrato, com as cláusulas seguintes:`,"## Cláusula 1.ª - Objecto","O Vendedor vende ao Comprador: {obj}.","## Cláusula 2.ª - Preço","O preço é de {preco}, com a seguinte forma de pagamento: {pag}.","## Cláusula 3.ª - Entrega","O bem é entregue ao Comprador em {ent}.","## Cláusula 4.ª - Propriedade","O Vendedor declara que o bem é seu e está livre de dívidas ou penhoras.","## Cláusula 5.ª - Foro","Para resolver qualquer litígio, as partes elegem o tribunal competente da comarca de {cidade}."],
+ s:[["O Vendedor","vN"],["O Comprador","cN"]]},
+
+{id:"procuracao",cat:"Família e pessoas",t:"Procuração",p:3000,
+ c:[...pes("o","Quem dá os poderes"),...pes("p","Quem recebe os poderes"),A("poderes","Poderes concedidos"),T("valid","Validade","um ano a contar da assinatura")],
+ x:["# Procuração",`Eu, ${pt("o")}, constituo meu(minha) procurador(a) ${pt("p")}, a quem concedo poderes para:`,"{poderes}","A presente procuração é válida por {valid}, podendo ser revogada a qualquer momento por escrito."],
+ s:[["O(A) outorgante","oN"]],
+ nota:"Para muitos fins (bancos, imóveis, repartições) a procuração tem de ser feita ou reconhecida no notário."},
+{id:"convivencia",cat:"Família e pessoas",t:"Declaração de convivência",p:2000,
+ c:[...pes("a","Primeira pessoa"),T("bN","Segunda pessoa: nome completo"),T("bB","N.º do BI da segunda pessoa"),D("desde","Vivem juntos desde"),T("moradaC","Morada em comum")],
+ x:["# Declaração de convivência",`Nós, ${pt("a")}, e {bN}, portador(a) do BI n.º {bB}, declaramos, sob compromisso de honra, que vivemos juntos em comunhão de vida desde {desde}, na morada {moradaC}.`,"A presente declaração é feita para os fins que se mostrem necessários."],
+ s:[["Primeira pessoa","aN"],["Segunda pessoa","bN"]], test:true,
+ nota:"Não substitui o reconhecimento da união de facto pelas entidades competentes."},
+{id:"agregado",cat:"Família e pessoas",t:"Declaração de agregado familiar",p:2000,
+ c:[NOME,BI,MOR,A("membros","Membros do agregado (nome, parentesco e idade, um por linha)")],
+ x:["# Declaração de agregado familiar","Eu, {nome}, portador(a) do BI n.º {bi}, residente em {morada}, declaro, sob compromisso de honra, que o meu agregado familiar é composto por:","{membros}"],
+ s:[["O(A) declarante","nome"]]},
+{id:"compromisso",cat:"Família e pessoas",t:"Termo de compromisso",p:1500,
+ c:[NOME,BI,A("comp","Compromisso assumido"),T("prazo","Prazo (se houver)","sem prazo definido")],
+ x:["# Termo de compromisso","Eu, {nome}, portador(a) do BI n.º {bi}, assumo, por este termo, o seguinte compromisso:","{comp}","Prazo: {prazo}.","Declaro que assumo este compromisso de livre vontade."],
+ s:[["O(A) declarante","nome"]]},
+
+{id:"acordo-pagamento",cat:"Dinheiro e pagamentos",t:"Acordo de pagamento em prestações",p:3000,
+ c:[...pes("d","Devedor"),...pes("c","Credor"),K("total","Valor total em dívida"),K("entrada","Entrada (pode ser 0)"),N("n","Número de prestações"),K("prest","Valor de cada prestação"),T("dia","Pagar até ao dia","5")],
+ x:["# Acordo de pagamento",`Entre ${pt("c")}, adiante designado(a) por Credor; e ${pt("d")}, adiante designado(a) por Devedor, é celebrado o presente acordo:`,"## Cláusula 1.ª - Dívida","O Devedor reconhece dever ao Credor o valor de {total}.","## Cláusula 2.ª - Pagamento","O Devedor paga uma entrada de {entrada} e o restante em {n} prestações de {prest}, até ao dia {dia} de cada mês.","## Cláusula 3.ª - Incumprimento","Se o Devedor atrasar mais de 30 dias qualquer prestação, o Credor pode exigir de uma só vez o valor que faltar.","## Cláusula 4.ª - Recibos","O Credor entrega recibo de cada pagamento recebido."],
+ s:[["O Devedor","dN"],["O Credor","cN"]], test:true},
+{id:"emprestimo",cat:"Dinheiro e pagamentos",t:"Contrato de empréstimo",p:3000,
+ c:[...pes("m","Quem empresta"),...pes("t","Quem recebe o empréstimo"),K("valor","Valor emprestado"),D("devol","Data limite de devolução"),T("juros","Juros","sem juros"),T("forma","Forma de devolução","numa única prestação")],
+ x:["# Contrato de empréstimo",`Entre ${pt("m")}, adiante designado(a) por Mutuante; e ${pt("t")}, adiante designado(a) por Mutuário, é celebrado o presente contrato de empréstimo:`,"## Cláusula 1.ª - Empréstimo","O Mutuante empresta ao Mutuário o valor de {valor}, que o Mutuário declara ter recebido.","## Cláusula 2.ª - Juros","Juros: {juros}.","## Cláusula 3.ª - Devolução","O Mutuário devolve o valor até {devol}, da seguinte forma: {forma}.","## Cláusula 4.ª - Incumprimento","Se não devolver no prazo, o Mutuário fica obrigado a pagar o valor em dívida e as despesas de cobrança."],
+ s:[["O Mutuante","mN"],["O Mutuário","tN"]], test:true},
+{id:"quitacao",cat:"Dinheiro e pagamentos",t:"Declaração de quitação (para o credor assinar)",p:2000,
+ c:[...pes("c","Credor"),T("dN","Devedor: nome completo"),K("valor","Valor pago"),D("pago","Data do pagamento")],
+ x:["# Declaração de quitação",`Eu, ${pt("c")}, declaro que recebi de {dN} a quantia de {valor}, em {pago}, que corresponde ao pagamento total da dívida, nada mais tendo a reclamar por este motivo.`],
+ s:[["O Credor","cN"]],
+ nota:"Só o credor deve assinar. Entregue ao devedor depois de receber o pagamento."},
+{id:"recibo",cat:"Dinheiro e pagamentos",t:"Recibo simples",p:1500,
+ c:[T("rN","Quem recebe: nome completo"),T("rB","N.º do BI de quem recebe"),T("pN","Quem pagou: nome completo"),K("valor","Valor"),A("ref","Referente a")],
+ x:["# Recibo","Eu, {rN}, portador(a) do BI n.º {rB}, recebi de {pN} a quantia de {valor}, referente a:","{ref}","Passo o presente recibo como prova do pagamento."],
+ s:[["Quem recebeu","rN"]]},
+{id:"parceria",cat:"Dinheiro e pagamentos",t:"Contrato de parceria",p:3000,
+ c:[...pes("a","Primeiro parceiro"),...pes("b","Segundo parceiro"),A("obj","Objecto da parceria"),A("contrib","Contribuição de cada parceiro"),T("lucros","Divisão dos lucros","50% para cada"),T("dur","Duração")],
+ x:["# Contrato de parceria",`Entre ${pt("a")}; e ${pt("b")}, é celebrado o presente contrato de parceria, com as cláusulas seguintes:`,"## Cláusula 1.ª - Objecto","{obj}","## Cláusula 2.ª - Contribuições","{contrib}","## Cláusula 3.ª - Lucros e perdas","Os lucros e as perdas são repartidos assim: {lucros}.","## Cláusula 4.ª - Duração","A parceria dura {dur}.","## Cláusula 5.ª - Saída","Qualquer parceiro pode sair, avisando o outro por escrito com 30 dias de antecedência, depois de feitas as contas."],
+ s:[["Primeiro parceiro","aN"],["Segundo parceiro","bN"]], test:true},
+{id:"decl-rendimento",cat:"Dinheiro e pagamentos",t:"Declaração de rendimento (do próprio)",p:2000,
+ c:[NOME,BI,T("fonte","Fonte do rendimento (ex.: negócio próprio)"),K("valor","Rendimento mensal aproximado")],
+ x:["# Declaração de rendimento","Eu, {nome}, portador(a) do BI n.º {bi}, declaro, sob compromisso de honra, que tenho um rendimento mensal aproximado de {valor}, proveniente de: {fonte}.","Esta declaração é feita pelo próprio e não substitui comprovativos oficiais."],
+ s:[["O(A) declarante","nome"]],
+ nota:"Não serve como prova de salário. Para visto, o cliente deve juntar extratos e declaração da entidade."},
+{id:"decl-bens",cat:"Dinheiro e pagamentos",t:"Declaração de bens (do próprio)",p:2000,
+ c:[NOME,BI,A("bens","Bens que possui (um por linha)")],
+ x:["# Declaração de bens","Eu, {nome}, portador(a) do BI n.º {bi}, declaro, sob compromisso de honra, que possuo os seguintes bens:","{bens}"],
+ s:[["O(A) declarante","nome"]]},
+{id:"desemprego",cat:"Dinheiro e pagamentos",t:"Declaração de desemprego (do próprio)",p:2000,
+ c:[NOME,BI,MOR,D("desde","Sem emprego desde")],
+ x:["# Declaração de situação de desemprego","Eu, {nome}, portador(a) do BI n.º {bi}, residente em {morada}, declaro, sob compromisso de honra, que me encontro em situação de desemprego desde {desde}, não exercendo qualquer actividade remunerada."],
+ s:[["O(A) declarante","nome"]]},
+
+{id:"requerimento",cat:"Pedidos e reclamações",t:"Requerimento (geral)",p:2000,
+ c:[NOME,BI,MOR,T("dest","Dirigido a (entidade ou pessoa)"),T("assunto","Assunto"),A("pedido","O que pede e porquê")],
+ x:["# Requerimento","Ex.mo(a) Senhor(a)\n{dest}","Assunto: {assunto}","{nome}, portador(a) do BI n.º {bi}, residente em {morada}, vem requerer a V. Ex.ª o seguinte:","{pedido}","Pede deferimento,"],
+ s:[["O(A) requerente","nome"]]},
+{id:"req-residencia",cat:"Pedidos e reclamações",t:"Requerimento de atestado de residência",p:2000,
+ c:[NOME,BI,MOR,T("adm","Dirigido a (Administração ou Comissão de Moradores)"),D("desde","Mora nesta morada desde"),T("fim","Para que fim","apresentar numa instituição")],
+ x:["# Requerimento de atestado de residência","Ex.mo(a) Senhor(a)\n{adm}","{nome}, portador(a) do BI n.º {bi}, residente em {morada} desde {desde}, vem requerer a emissão de atestado de residência, para {fim}.","Anexa cópia do BI e os comprovativos de morada que tiver.","Pede deferimento,"],
+ s:[["O(A) requerente","nome"]],
+ nota:"O atestado só vale quando emitido pela entidade. Isto é o pedido."},
+{id:"req-escola",cat:"Pedidos e reclamações",t:"Requerimento de declaração de frequência escolar",p:2000,
+ c:[NOME,BI,T("aluno","Aluno(a): nome completo"),T("classe","Classe e turma do aluno"),T("escola","Escola (dirigido ao Director)"),T("fim","Para que fim")],
+ x:["# Requerimento de declaração de frequência escolar","Ex.mo(a) Senhor(a) Director(a)\n{escola}","{nome}, portador(a) do BI n.º {bi}, encarregado(a) de educação de {aluno}, aluno(a) da {classe}, vem requerer a emissão de declaração de frequência escolar, para {fim}.","Pede deferimento,"],
+ s:[["O(A) encarregado(a) de educação","nome"]]},
+{id:"reclamacao",cat:"Pedidos e reclamações",t:"Carta de reclamação",p:2000,
+ c:[NOME,T("tel","Telefone"),T("dest","Entidade ou empresa reclamada"),D("quando","Data do problema"),A("fatos","O que aconteceu"),A("pedido","O que exige que seja feito")],
+ x:["# Carta de reclamação","Ex.mos Senhores\n{dest}","Eu, {nome}, venho apresentar reclamação sobre o seguinte facto, ocorrido em {quando}:","{fatos}","Por este motivo, solicito o seguinte:","{pedido}","Fico a aguardar resposta no contacto {tel}.","Com os melhores cumprimentos,"],
+ s:[["O(A) reclamante","nome"]]},
+{id:"recurso",cat:"Visto e viagem",t:"Carta de recurso de visto negado",p:10000,url:true}
+];
+
+/* ===== Estado ===== */
+let atual = null, blocosAtuais = [];
+const defsDe = d => d.c.map(c => Array.isArray(c) ? {k:c[0],l:c[1],t:c[2]||"text",d:c[3]||""} : c)
+  .concat([{k:"cidade",l:"Cidade",t:"text",d:"Luanda"},{k:"data",l:"Data do documento",t:"date",d:isoHoje()}]);
+
+/* ===== Navegação ===== */
+function ver(id){ document.querySelectorAll(".vista").forEach(v=>v.classList.remove("on")); $(id).classList.add("on"); window.scrollTo(0,0); }
+
+/* ===== Lista ===== */
+function desenharLista(){
+  const q = $("busca").value.trim().toLowerCase();
+  const grupos = {};
+  DOCS.filter(d => !q || d.t.toLowerCase().includes(q) || d.cat.toLowerCase().includes(q)).forEach(d => (grupos[d.cat] = grupos[d.cat] || []).push(d));
+  const cats = Object.keys(grupos);
+  $("lista").innerHTML = cats.length ? cats.map(c => `<div class="grupo"><h2>${esc(c)}</h2>${grupos[c].map(d =>
+    `<button class="item" data-id="${d.id}"><span>${esc(d.t)}${d.url?' <span class="ext">(abre outro gerador)</span>':''}</span><span class="p">${kzf(d.p)} Kz</span></button>`).join("")}</div>`).join("")
+    : `<p style="margin-top:20px;color:var(--suave)">Nenhum documento encontrado. Tente outra palavra.</p>`;
+}
+$("lista").addEventListener("click", e => {
+  const b = e.target.closest(".item"); if(!b) return;
+  const d = DOCS.find(x => x.id === b.dataset.id);
+  if(d.url){ window.open(CFG.linkRecurso, "_blank", "noopener"); return; }
+  abrirForm(d);
+});
+$("busca").addEventListener("input", desenharLista);
+
+/* ===== Formulário ===== */
+function abrirForm(d){
+  atual = d;
+  $("fTitulo").textContent = d.t;
+  $("fNota").style.display = d.nota ? "block" : "none"; $("fNota").textContent = d.nota || "";
+  $("campos").innerHTML = defsDe(d).map(f => {
+    const id = "f-" + f.k;
+    let campo;
+    if(f.t === "area") campo = `<textarea id="${id}"></textarea>`;
+    else if(f.t === "date") campo = `<input type="date" id="${id}" value="${f.d||""}">`;
+    else if(f.t === "kz" || f.t === "num") campo = `<input type="text" inputmode="numeric" id="${id}"><div class="hint" id="h-${f.k}"></div>`;
+    else campo = `<input type="text" id="${id}" value="${esc(f.d||"")}">`;
+    return `<label for="${id}">${esc(f.l)}</label>${campo}`;
+  }).join("");
+  defsDe(d).filter(f => f.t === "kz").forEach(f => $("f-"+f.k).addEventListener("input", () => {
+    const n = soDigitos($("f-"+f.k).value); $("h-"+f.k).textContent = n ? extenso(n) + " Kwanzas" : "";
+  }));
+  $("preco").value = kzf(d.p); $("cli").value = ""; $("cliZap").value = ""; $("ref").value = "";
+  ver("vForm");
+}
+
+/* ===== Montar o documento ===== */
+function montar(){
+  const defs = defsDe(atual), vals = {};
+  defs.forEach(f => {
+    const v = ($("f-"+f.k).value || "").trim();
+    if(!v) vals[f.k] = `[${f.l}]`;
+    else if(f.t === "date") vals[f.k] = dataLonga(v);
+    else if(f.t === "kz") vals[f.k] = moeda(soDigitos(v));
+    else vals[f.k] = v;
+  });
+  const sub = s => s.replace(/\{(\w+)\}/g, (m,k) => k in vals ? vals[k] : m);
+  const out = [];
+  atual.x.forEach(l => {
+    const t = sub(l);
+    if(t.startsWith("## ")) out.push({c:"sub",t:t.slice(3)});
+    else if(t.startsWith("# ")) out.push({c:"titulo",t:t.slice(2)});
+    else t.split("\n").forEach(p => out.push({c:"p",t:p}));
+  });
+  if(!atual.semFecho) out.push({c:"p",t:`${vals.cidade}, ${vals.data}.`});
+  out.push({c:"assin", lista:(atual.s||[]).map(([r,k]) => ({r:sub(r), n:k ? vals[k] : ""})), test:!!atual.test});
+  return out;
+}
+const mark = s => esc(s).replace(/\[([^\]]+)\]/g, "<mark>[$1]</mark>");
+
+function mostrarPrev(){
+  blocosAtuais = montar();
+  $("folha").innerHTML = blocosAtuais.map(b => {
+    if(b.c === "assin"){
+      const l = b.lista;
+      return (l.length ? `<div class="assin ${l.length===1?'um':''}">${l.map(a=>`<div>${mark(a.r)}${a.n?"<br>"+mark(a.n):""}</div>`).join("")}</div>` : "")
+        + (b.test ? `<p style="margin-top:30px">Testemunhas:</p><p>1. ______________________________</p><p>2. ______________________________</p>` : "");
+    }
+    return `<p class="${b.c}">${mark(b.t)}</p>`;
+  }).join("");
+  $("estado").textContent = "";
+  ver("vPrev");
+}
+$("btnVer").addEventListener("click", mostrarPrev);
+$("btnEditar").addEventListener("click", () => ver("vForm"));
+$("btnVoltarLista").addEventListener("click", () => ver("vLista"));
+
+/* ===== PDF ===== */
+function criarPDF(blocos){
+  const { jsPDF } = window.jspdf, pdf = new jsPDF({unit:"mm", format:"a4"});
+  const L=22, W=166, T0=24, B=24, H=297; let y = T0;
+  const need = h => { if(y + h > H - B){ pdf.addPage(); y = T0; } };
+  blocos.forEach(b => {
+    if(b.c === "titulo"){
+      pdf.setFont("times","bold"); pdf.setFontSize(14);
+      const ls = pdf.splitTextToSize(b.t.toUpperCase(), W); need(ls.length*7 + 8);
+      ls.forEach(l => { pdf.text(l, L+W/2, y, {align:"center"}); y += 7; }); y += 5;
+    } else if(b.c === "sub"){
+      pdf.setFont("times","bold"); pdf.setFontSize(12);
+      const ls = pdf.splitTextToSize(b.t, W); need(ls.length*6 + 14); y += 3;
+      ls.forEach(l => { pdf.text(l, L, y); y += 6; }); y += 1;
+    } else if(b.c === "p"){
+      pdf.setFont("times","normal"); pdf.setFontSize(12);
+      pdf.splitTextToSize(b.t || " ", W).forEach(l => { need(6); pdf.text(l, L, y); y += 6; }); y += 2.5;
+    } else if(b.c === "assin"){
+      const lista = b.lista, n = lista.length;
+      if(n){
+        const linhas = Math.ceil(n/2); need(linhas*32 + 16); y += 16;
+        for(let r=0; r<linhas; r++){
+          const par = lista.slice(r*2, r*2+2);
+          par.forEach((a,i) => {
+            const x0 = par.length === 1 ? L + W/2 - 38 : (i ? L + W/2 + 8 : L);
+            pdf.setDrawColor(0); pdf.line(x0, y, x0+76, y);
+            pdf.setFont("times","normal"); pdf.setFontSize(11);
+            let yy = y + 5;
+            pdf.splitTextToSize(a.r, 76).forEach(l => { pdf.text(l, x0+38, yy, {align:"center"}); yy += 5; });
+            if(a.n) pdf.text(pdf.splitTextToSize(a.n, 76)[0], x0+38, yy, {align:"center"});
+          });
+          y += 32;
+        }
+      }
+      if(b.test){
+        need(34); y += 4; pdf.setFont("times","normal"); pdf.setFontSize(12);
+        pdf.text("Testemunhas:", L, y); y += 12;
+        pdf.text("1. ______________________________", L, y); y += 12;
+        pdf.text("2. ______________________________", L, y); y += 8;
+      }
+    }
+  });
+  const N = pdf.getNumberOfPages();
+  if(N > 1) for(let i=1; i<=N; i++){ pdf.setPage(i); pdf.setFont("times","normal"); pdf.setFontSize(9); pdf.setTextColor(120); pdf.text(`${i} / ${N}`, L+W/2, H-12, {align:"center"}); }
+  return pdf;
+}
+$("btnPDF").addEventListener("click", () => {
+  if(!window.jspdf){ $("estado").textContent = "Sem internet para carregar o gerador de PDF. Vai abrir a impressão: escolha Guardar como PDF."; window.print(); return; }
+  const nome = (atual.id + "-" + ($("cli").value.trim() || "cliente")).toLowerCase().replace(/[^a-z0-9]+/g,"-");
+  criarPDF(blocosAtuais).save(nome + ".pdf");
+  registar();
+  $("estado").textContent = "PDF gerado e registado.";
+});
+
+/* ===== Cobrança e cópia ===== */
+$("btnCobrar").addEventListener("click", () => {
+  const p = soDigitos($("preco").value);
+  const msg = `Olá! O documento "${atual.t}" custa ${kzf(p)} Kz. Pague por Multicaixa Express para ${CFG.express} (${CFG.nome}) e envie o comprovativo aqui. Depois de confirmar, envio o PDF.`;
+  const num = $("cliZap").value.replace(/\D/g,"");
+  const base = num ? `https://wa.me/${num.length === 9 ? "244" + num : num}` : "https://wa.me/";
+  window.open(`${base}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+});
+$("btnCopiar").addEventListener("click", async () => {
+  const texto = blocosAtuais.map(b => b.c==="assin" ? b.lista.map(a=>a.r+(a.n?" - "+a.n:"")).join("\n") : b.t).join("\n\n");
+  try{ await navigator.clipboard.writeText(texto); $("estado").textContent = "Texto copiado."; }
+  catch{ $("estado").textContent = "Não foi possível copiar."; }
+});
+
+/* ===== Recibo do cliente ===== */
+$("btnRecibo").addEventListener("click", () => {
+  const ref = $("ref").value.trim(), valor = soDigitos($("preco").value);
+  if(!ref){ $("estado").textContent = "Preencha o n.º do comprovativo do Express (volte a editar, em Cobrança)."; return; }
+  if(!valor){ $("estado").textContent = "Preencha o preço combinado."; return; }
+  if(!window.jspdf){ $("estado").textContent = "Sem internet para carregar o gerador de PDF."; return; }
+  const numero = String((parseInt(localStorage.getItem("cl_recibo_n") || "0", 10)) + 1).padStart(4, "0");
+  localStorage.setItem("cl_recibo_n", String(parseInt(numero, 10)));
+  const cli = $("cli").value.trim() || "cliente";
+  const { jsPDF } = window.jspdf, pdf = new jsPDF({unit:"mm", format:"a4"});
+  const L = 22, W = 166; let y = 30;
+  pdf.setFont("times","bold"); pdf.setFontSize(20); pdf.text(CFG.nome, L+W/2, y, {align:"center"}); y += 9;
+  pdf.setFontSize(14); pdf.text("RECIBO DE PAGAMENTO", L+W/2, y, {align:"center"}); y += 7;
+  pdf.setFont("times","normal"); pdf.setFontSize(12); pdf.text("N.º " + numero, L+W/2, y, {align:"center"}); y += 6;
+  pdf.setDrawColor(0); pdf.line(L, y, L+W, y); y += 12;
+  const linhas = [
+    ["Data", new Date().toLocaleDateString("pt-PT",{day:"numeric",month:"long",year:"numeric"})],
+    ["Cliente", cli],
+    ["Serviço", atual.t],
+    ["Valor pago", moeda(valor)],
+    ["Forma de pagamento", "Multicaixa Express, para o n.º " + CFG.express],
+    ["Comprovativo n.º", ref]
+  ];
+  linhas.forEach(([k,v]) => {
+    pdf.setFont("times","bold"); pdf.text(k + ":", L, y);
+    pdf.setFont("times","normal");
+    const ls = pdf.splitTextToSize(v, W - 50);
+    ls.forEach((l,i) => pdf.text(l, L+50, y + i*6));
+    y += Math.max(1, ls.length) * 6 + 4;
+  });
+  y += 6;
+  pdf.text("Recebemos o valor acima, referente ao serviço indicado.", L, y); y += 30;
+  pdf.line(L+W/2-38, y, L+W/2+38, y);
+  pdf.setFontSize(11); pdf.text(CFG.nome, L+W/2, y+5, {align:"center"});
+  pdf.text("WhatsApp: " + CFG.zap, L+W/2, y+10, {align:"center"});
+  pdf.save(`recibo-${numero}-${cli.toLowerCase().replace(/[^a-z0-9]+/g,"-")}.pdf`);
+  $("estado").textContent = `Recibo n.º ${numero} gerado.`;
+});
+
+/* ===== Registo de vendas ===== */
+const lerReg = () => { try{ return JSON.parse(localStorage.getItem("cl_vendas")) || []; }catch{ return []; } };
+function registar(){
+  const r = lerReg();
+  const primeiro = atual.c.length ? $("f-" + (Array.isArray(atual.c[0]) ? atual.c[0][0] : atual.c[0].k)).value.trim() : "";
+  r.push({d:isoHoje(), doc:atual.t, cli:$("cli").value.trim() || primeiro || "sem nome", preco:soDigitos($("preco").value)});
+  localStorage.setItem("cl_vendas", JSON.stringify(r));
+}
+function desenharReg(){
+  const r = lerReg(), hoje = isoHoje();
+  $("totHoje").textContent = kzf(r.filter(x=>x.d===hoje).reduce((s,x)=>s+x.preco,0));
+  $("totGeral").textContent = kzf(r.reduce((s,x)=>s+x.preco,0));
+  $("regLista").innerHTML = r.length ? r.slice().reverse().map(x =>
+    `<div class="linha"><span>${esc(x.doc)}<small>${esc(x.cli)} - ${x.d.split("-").reverse().join("/")}</small></span><b>${kzf(x.preco)} Kz</b></div>`).join("")
+    : `<p style="color:var(--suave)">Ainda não há vendas registadas.</p>`;
+}
+$("bReg").addEventListener("click", () => { desenharReg(); ver("vReg"); });
+$("btnLimpar").addEventListener("click", () => { if(confirm("Apagar todo o registo de vendas? Isto não pode ser desfeito.")){ localStorage.removeItem("cl_vendas"); desenharReg(); } });
+$("bLista").addEventListener("click", () => ver("vLista"));
+
+/* ===== PIN ===== */
+async function sha(s){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join(""); }
+const hashAtual = () => localStorage.getItem("cl_pin") || CFG.pinPadraoHash;
+let falhas = 0, bloqueadoAte = 0;
+async function entrar(){
+  const agora = Date.now();
+  if(agora < bloqueadoAte){ $("lockErro").textContent = `Espere ${Math.ceil((bloqueadoAte-agora)/1000)} segundos.`; return; }
+  if(await sha($("pin").value) === hashAtual()){ sessionStorage.setItem("cl_ok","1"); $("lock").style.display = "none"; }
+  else {
+    falhas++;
+    if(falhas >= 5){ bloqueadoAte = Date.now() + 30000; falhas = 0; $("lockErro").textContent = "Muitas tentativas. Espere 30 segundos."; }
+    else $("lockErro").textContent = "PIN errado. Tente de novo.";
+    $("pin").value = "";
+  }
+}
+$("btnEntrar").addEventListener("click", entrar);
+$("pin").addEventListener("keydown", e => { if(e.key === "Enter") entrar(); });
+$("bPin").addEventListener("click", async () => {
+  const novo = prompt("Escolha um novo PIN (mínimo 4 caracteres):");
+  if(!novo) return;
+  if(novo.length < 4){ alert("O PIN tem de ter pelo menos 4 caracteres."); return; }
+  const h = await sha(novo);
+  localStorage.setItem("cl_pin", h);
+  prompt("PIN mudado neste telemóvel. Para valer em todos os aparelhos, copie este código e cole no ficheiro index.html, no lugar de pinPadraoHash:", h);
+});
+
+/* ===== Início ===== */
+$("nomeLoja").textContent = CFG.nome; $("lockNome").textContent = CFG.nome;
+if(!window.crypto || !crypto.subtle || sessionStorage.getItem("cl_ok") === "1") $("lock").style.display = "none";
+desenharLista();
+</script>
+</body>
+</html>
